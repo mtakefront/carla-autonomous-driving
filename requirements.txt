@@ -1,0 +1,6 @@
+carla==0.9.16
+stable_baselines3==2.9.2
+gymnasium==1.4.0
+numpy==2.5.4
+torch==2.14.1
+pillow==13.0.0

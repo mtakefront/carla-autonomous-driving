@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# CARLA / project specific
+*.sif
+backup/
+checkpoints/
+xdg-runtime/
