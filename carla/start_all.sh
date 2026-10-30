@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-CARLA_DIR="$HOME/carla"
-PROJECT_DIR="$HOME/carla-rl"
+# Paths relative to this script, so the repo works from any location
+CARLA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$CARLA_DIR/../carla-rl" && pwd)"
 PYTHON="$PROJECT_DIR/env/bin/python"
 
 CARLA_PID=""

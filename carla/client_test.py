@@ -1,4 +1,4 @@
-import queue, sys, time
+import os, queue, sys, time
 import carla
 
 port = int(sys.argv[1]) if len(sys.argv) > 1 else 2000
@@ -34,8 +34,9 @@ while not images.empty():
     img = images.get()
 print("100 ticks in %.1fs (%.0f FPS) | last frame %d" % (time.time() - t0, 100 / (time.time() - t0), img.frame))
 print("vehicle at", vehicle.get_location())
-img.save_to_disk("/home/sahin.o/carla/test_frame.png")
-print("saved /home/sahin.o/carla/test_frame.png")
+frame_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_frame.png")
+img.save_to_disk(frame_path)
+print("saved", frame_path)
 
 camera.stop(); camera.destroy(); vehicle.destroy()
 settings.synchronous_mode = False

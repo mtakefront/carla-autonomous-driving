@@ -11,11 +11,14 @@
 
 PORT=${1:-2000}
 shift || true
-CARLA_DIR="$HOME/carla"
-mkdir -p "$CARLA_DIR/xdg-runtime" && chmod 700 "$CARLA_DIR/xdg-runtime"
+CARLA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Per-user runtime dir (must be 0700 and owned by the user), so anyone with
+# access to this folder can start CARLA
+XDG_DIR="/tmp/xdg-runtime-$USER"
+mkdir -p "$XDG_DIR" && chmod 700 "$XDG_DIR"
 
 exec apptainer exec --nv \
-  --env XDG_RUNTIME_DIR="$CARLA_DIR/xdg-runtime" \
+  --env XDG_RUNTIME_DIR="$XDG_DIR" \
   --bind /usr/share/vulkan/icd.d/nvidia_icd.x86_64.json:/etc/vulkan/icd.d/nvidia_icd.json \
   --env VK_ICD_FILENAMES=/etc/vulkan/icd.d/nvidia_icd.json \
   --bind /usr/share/glvnd/egl_vendor.d/10_nvidia.json:/opt/10_nvidia.json \

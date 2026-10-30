@@ -5,13 +5,15 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=01:00:00
-#SBATCH --output=/home/sahin.o/carla-rl/slurm_train_v14_%j.out
+#SBATCH --output=slurm_train_v14_%j.out
 
 # Starts CARLA, spawns the vehicle, runs train_v14.py and exits when
 # training finishes (or at the 1 h limit). Training output: train_v14.log
+# Submit from the carla-rl folder: cd carla-rl && sbatch train_v14.sbatch
 
-CARLA_DIR="$HOME/carla"
-PROJECT_DIR="$HOME/carla-rl"
+# sbatch runs a copy of this file, so paths come from the submit directory
+PROJECT_DIR="$SLURM_SUBMIT_DIR"
+CARLA_DIR="$PROJECT_DIR/../carla"
 PYTHON="$PROJECT_DIR/env/bin/python"
 
 CARLA_PID=""

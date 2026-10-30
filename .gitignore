@@ -223,6 +223,5 @@ __marimo__/
 *.sif
 backup/
 checkpoints/
-xdg-runtime/
 test_frame.png
 slurm_*.out

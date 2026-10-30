@@ -6,12 +6,12 @@ simulator, running headless on the Northeastern Explorer HPC cluster.
 ## Repository layout
 
 ```
-carla/                      CARLA server scripts (expected at ~/carla)
+carla/                      CARLA server scripts (+ carla-0.9.16.sif, not in git)
   start_carla.sh            starts the CARLA server (Apptainer) with the GPU fixes
   start_all.sh              CARLA + vehicle spawn + live view, stops on Ctrl+C
   client_test.py            quick check that the server renders on the GPU
 
-carla-rl/                   RL project (expected at ~/carla-rl)
+carla-rl/                   RL project (+ env/ virtualenv, not in git)
   carla_env.py              Gymnasium environment (observation, reward, termination)
   train_v14.py              PPO training, 100k steps
   evaluate_v14.py           runs the trained model deterministically
@@ -24,19 +24,19 @@ carla-rl/                   RL project (expected at ~/carla-rl)
   control_vehicle.py, read_state.py, reset_vehicle.py, test_env.py   small helpers
 ```
 
-The scripts use absolute paths `~/carla` and `~/carla-rl`, so copy (or symlink) the two
-folders there.
+Scripts find their paths relative to the repository, so it can be cloned anywhere.
+The commands below assume the clone is at `~/carla-autonomous-driving`.
 
 ## Setup
 
 1. CARLA server image (not in the repo, 8 GB):
    ```bash
-   cd ~/carla
+   cd ~/carla-autonomous-driving/carla
    apptainer pull carla-0.9.16.sif docker://carlasim/carla:0.9.16
    ```
 2. Python client environment:
    ```bash
-   cd ~/carla-rl
+   cd ~/carla-autonomous-driving/carla-rl
    module load anaconda3/2024.06      # Python 3.12 on Explorer
    python3 -m venv env
    source env/bin/activate
@@ -53,10 +53,10 @@ In an interactive GPU job:
 
 ```bash
 # terminal 1: CARLA + vehicle + live view (http://<node>:8080)
-~/carla/start_all.sh
+~/carla-autonomous-driving/carla/start_all.sh
 
 # terminal 2
-cd ~/carla-rl && source env/bin/activate
+cd ~/carla-autonomous-driving/carla-rl && source env/bin/activate
 python find_straight.py                              # move car to the start road
 python -u evaluate_v14.py 2>&1 | tee eval_v14.log    # or train_v14.py
 ```
@@ -64,7 +64,8 @@ python -u evaluate_v14.py 2>&1 | tee eval_v14.log    # or train_v14.py
 `find_straight.py` must be run before training or evaluation; the first spawn point is
 inside a junction. Stop with Ctrl+C so the environment turns synchronous mode off.
 
-Unattended training: `sbatch ~/carla-rl/train_v14.sbatch` (output in `train_v14.log`).
+Unattended training: `cd ~/carla-autonomous-driving/carla-rl && sbatch train_v14.sbatch`
+(output in `train_v14.log`).
 
 ## Environment (v14)
 
@@ -83,3 +84,6 @@ Unattended training: `sbatch ~/carla-rl/train_v14.sbatch` (output in `train_v14.
 After 100k training steps, the deterministic policy drives the full 3000-step episode
 on Town10HD_Opt without leaving the road: ~40.8 km/h, ~0.02 m lateral offset,
 episode reward 2859. Tested only on the training start point and route.
+
+Training curves, PPO diagnostics and evaluation plots:
+[docs/ppo_lane_keeping_v14_report.pdf](docs/ppo_lane_keeping_v14_report.pdf)
