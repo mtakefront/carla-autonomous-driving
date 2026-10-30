@@ -1,5 +1,7 @@
 import carla
 
+from hero import find_hero
+
 client = carla.Client("127.0.0.1", 2000)
 client.set_timeout(20)
 
@@ -35,9 +37,7 @@ for start in carla_map.get_spawn_points():
             break
 
     if valid:
-        vehicle = world.get_actor(24)
-        if vehicle is None:
-            raise RuntimeError("Vehicle 24 not found")
+        vehicle = find_hero(world)
 
         vehicle.apply_control(carla.VehicleControl(brake=1))
         vehicle.set_simulate_physics(False)

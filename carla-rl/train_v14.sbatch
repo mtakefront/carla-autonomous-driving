@@ -58,13 +58,7 @@ if [[ "$ready" -ne 1 ]]; then
 fi
 
 echo "Spawning vehicle..."
-SPAWN_OUT=$("$PYTHON" spawn_vehicle.py) || exit 1
-echo "$SPAWN_OUT"
-VEHICLE_ID=$(echo "$SPAWN_OUT" | awk '/Vehicle ID:/ {print $3}')
-if [[ -z "$VEHICLE_ID" ]]; then
-    echo "Could not read vehicle id."
-    exit 1
-fi
+"$PYTHON" spawn_vehicle.py || exit 1
 
 # Spawn point 0 is inside a junction; move the car to the same straight
 # road (road 12) the earlier runs started on
@@ -75,9 +69,9 @@ echo "Starting Live View (port 8080)..."
 "$PYTHON" -u live_view.py > live_view_train_v14.log 2>&1 &
 LIVE_PID=$!
 
-echo "Training with VEHICLE_ID=$VEHICLE_ID..."
+echo "Training..."
 # Run in background + wait so SIGTERM at the time limit reaches the trap
-VEHICLE_ID="$VEHICLE_ID" "$PYTHON" -u train_v14.py > train_v14.log 2>&1 &
+"$PYTHON" -u train_v14.py > train_v14.log 2>&1 &
 TRAIN_PID=$!
 trap 'kill -TERM "$TRAIN_PID" 2>/dev/null; wait "$TRAIN_PID"; cleanup' TERM
 wait "$TRAIN_PID"

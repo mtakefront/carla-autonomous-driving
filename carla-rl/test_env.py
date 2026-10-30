@@ -1,6 +1,6 @@
 from carla_env import CarlaEnv
 
-env = CarlaEnv(vehicle_id=24)
+env = CarlaEnv()
 obs, info = env.reset()
 
 print("Initial observation:", obs)

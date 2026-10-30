@@ -8,7 +8,7 @@ from carla_env import CarlaEnv
 model_path = sys.argv[1] if len(sys.argv) > 1 else "ppo_lane_keeping_v14"
 norm_path = sys.argv[2] if len(sys.argv) > 2 else "vecnormalize_v14.pkl"
 
-raw_env = CarlaEnv(vehicle_id=24)
+raw_env = CarlaEnv()
 env = VecNormalize.load(norm_path, DummyVecEnv([lambda: raw_env]))
 env.training = False
 env.norm_reward = False

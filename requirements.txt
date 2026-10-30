@@ -1,6 +1,8 @@
+# CUDA 12.6 build: runs on Explorer's CUDA 12.3 driver (CUDA 13 builds do not)
+--extra-index-url https://download.pytorch.org/whl/cu126
 carla==0.9.16
 stable_baselines3==2.9.2
 gymnasium==1.4.0
 numpy==2.5.4
-torch==2.14.1
+torch==2.14.1+cu126
 pillow==13.0.0

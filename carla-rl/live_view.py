@@ -5,6 +5,8 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from hero import find_hero
+
 client = carla.Client("127.0.0.1", 2000)
 client.set_timeout(20.0)
 world = client.get_world()
@@ -15,10 +17,12 @@ bp.set_attribute("image_size_y", "600")
 bp.set_attribute("sensor_tick", "0.1")
 bp.set_attribute("fov", "90")
 
-vehicles = world.get_actors().filter("vehicle.*")
+try:
+    vehicle = find_hero(world)
+except RuntimeError:
+    vehicle = None
 
-if vehicles:
-    vehicle = vehicles[0]
+if vehicle is not None:
     camera = world.spawn_actor(
         bp,
         carla.Transform(carla.Location(x=-6, z=3)),

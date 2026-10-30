@@ -6,13 +6,15 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
+from hero import find_hero
+
 
 ROUTE_SPACING = 1.0            # meters between route waypoints
 LOOKAHEAD = (5, 10, 20, 40)    # meters ahead for future headings
 
 
 class CarlaEnv(gym.Env):
-    def __init__(self, vehicle_id=24, max_steps=3000, route_length=2000):
+    def __init__(self, vehicle_id=None, max_steps=3000, route_length=2000):
         super().__init__()
 
         self.client = carla.Client("127.0.0.1", 2000)
@@ -22,7 +24,11 @@ class CarlaEnv(gym.Env):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
         self.world.apply_settings(settings)
-        self.vehicle = self.world.get_actor(vehicle_id)
+        # Default: the hero vehicle; vehicle_id picks a specific actor
+        if vehicle_id is None:
+            self.vehicle = find_hero(self.world)
+        else:
+            self.vehicle = self.world.get_actor(vehicle_id)
 
         if self.vehicle is None:
             raise RuntimeError("Vehicle not found")

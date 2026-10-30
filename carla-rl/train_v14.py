@@ -1,4 +1,3 @@
-import os
 import signal
 import sys
 
@@ -11,8 +10,7 @@ from carla_env import CarlaEnv
 # SIGTERM (kill, Slurm time limit) -> normal exit so finally/close() runs
 signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
-# Batch job passes the id printed by spawn_vehicle.py
-raw_env = CarlaEnv(vehicle_id=int(os.environ.get("VEHICLE_ID", 24)))
+raw_env = CarlaEnv()
 env = VecNormalize(
     DummyVecEnv([lambda: Monitor(raw_env)]),
     norm_obs=True,

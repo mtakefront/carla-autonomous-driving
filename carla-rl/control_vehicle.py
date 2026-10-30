@@ -1,14 +1,13 @@
 import carla
 import time
 
+from hero import find_hero
+
 client = carla.Client("127.0.0.1", 2000)
 client.set_timeout(20.0)
 
 world = client.get_world()
-vehicle = world.get_actor(24)
-
-if vehicle is None or vehicle.type_id != "vehicle.tesla.model3":
-    raise RuntimeError("Tesla Model 3 with ID 24 not found")
+vehicle = find_hero(world)
 
 print("Controlling vehicle:", vehicle.id)
 
