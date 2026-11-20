@@ -3,6 +3,7 @@
 carla==0.9.16
 stable_baselines3==2.9.2
 gymnasium==1.4.0
+networkx==3.7          # CARLA's route planner (carla-rl/agents)
 numpy==2.5.4
 torch==2.14.1+cu126
 pillow==13.0.0
