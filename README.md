@@ -20,9 +20,6 @@ carla-rl/                   RL project (+ env/ virtualenv, not in git)
   agents/                   CARLA 0.9.16 PythonAPI agents (route planner), see Setup
   spawn_vehicle.py          spawns a Tesla Model 3 (role name "hero")
   live_view.py              chase camera stream on port 8080
-  train_v14.py, evaluate_v14.py, train_v14.sbatch, ppo_lane_keeping_v14.zip,
-  vecnormalize_v14.pkl      v14 (legacy, needs the v14 carla_env.py, see below)
-  find_straight.py          moves the vehicle to road 12 (only used by v14)
   control_vehicle.py, read_state.py, reset_vehicle.py, test_env.py   small helpers
 ```
 
@@ -115,19 +112,18 @@ Do not run an interactive training at the same time: both write the same files.
   `junctions/*` (pass rate per maneuver), `reward_parts/*` (reward per term) and a
   `[fail]` line per failed episode.
 
-## v14 (legacy)
+## v14 (earlier version)
 
-v14 trained on a single fixed 2000 m route (straightest branch at junctions) with an
-8-value observation measured against that route. Its scripts and model are kept, but
-`carla_env.py` is now v15, so to run v14 restore its environment from git history:
+v14 was single-route lane keeping (fixed 2000 m route, 8-value observation). Its
+environment, scripts, model and report are no longer in the working tree; they are in
+commit `6a1da41` and can be restored with:
 
 ```bash
-git show 6a1da41:carla-rl/carla_env.py > carla-rl/carla_env.py
+git checkout 6a1da41 -- carla-rl/carla_env.py carla-rl/train_v14.py \
+    carla-rl/evaluate_v14.py carla-rl/train_v14.sbatch carla-rl/find_straight.py \
+    carla-rl/ppo_lane_keeping_v14.zip carla-rl/vecnormalize_v14.pkl \
+    docs/ppo_lane_keeping_v14_report.pdf
 ```
 
-After 100k training steps, the deterministic v14 policy drove the full 3000-step episode
-on Town10HD_Opt without leaving the road: 40.8 km/h, mean lateral offset 0.09 m,
-episode reward 2859. Tested only on the training start point and route.
-
-Training curves, PPO diagnostics and evaluation plots:
-[docs/ppo_lane_keeping_v14_report.pdf](docs/ppo_lane_keeping_v14_report.pdf)
+Result: after 100k steps the deterministic policy drove the full 3000-step episode on its
+training route at 40.8 km/h with a mean lateral offset of 0.09 m (episode reward 2859).
